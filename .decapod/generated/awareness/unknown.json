@@ -1,7 +1,7 @@
 {
   "agent_id": "unknown",
-  "session_token": "01KY3BTTNMGGY1ZJRF1B2ZMHTR",
-  "initialized_at_epoch_secs": 1784671988,
+  "session_token": "01KY3CSCT6PZXDCN8HZSYW7G8K",
+  "initialized_at_epoch_secs": 1784673019,
   "validated_at_epoch_secs": null,
   "core_constitution_ingested_at_epoch_secs": null,
   "context_resolved_at_epoch_secs": 1784672174,

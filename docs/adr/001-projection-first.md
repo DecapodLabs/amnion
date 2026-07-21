@@ -47,4 +47,3 @@ Decapod enrichment, or mutating human controls. Those are separate issues with
 their own contracts and proof expectations. In return, replay is deterministic,
 duplicate events are idempotent, local `ready` cannot become authoritative
 completion, and quiet mode can be tested without weakening safety signals.
-
