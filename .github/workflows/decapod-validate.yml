@@ -1,13 +1,29 @@
-name: Decapod Validate
+name: Amnion Validation
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
+  workflow_dispatch:
 
 jobs:
-  validate:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust 1.90
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.90.0
+          components: rustfmt, clippy
+      - name: Rust checks
+        run: |
+          cargo fmt --check
+          cargo test
+          cargo clippy --all-targets --all-features -- -D warnings
+
+  decapod:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,12 +36,12 @@ jobs:
           key: ${{ runner.os }}-decapod-${{ hashFiles('Cargo.toml', 'Cargo.lock') }}
       - name: Install Decapod
         run: |
-          if ! command -v decapod &> /dev/null; then
+          if ! command -v decapod >/dev/null 2>&1; then
             cargo install decapod
           fi
-      - name: Decapod Validate
+      - name: Decapod validation
         env:
           DECAPOD_VALIDATE_SKIP_GIT_GATES: 1
         run: |
-          decapod init --proof --force
+          decapod init --proof
           decapod validate
