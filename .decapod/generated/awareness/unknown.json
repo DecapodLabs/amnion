@@ -4,8 +4,9 @@
   "initialized_at_epoch_secs": 1784671988,
   "validated_at_epoch_secs": null,
   "core_constitution_ingested_at_epoch_secs": null,
-  "context_resolved_at_epoch_secs": null,
+  "context_resolved_at_epoch_secs": 1784672174,
   "source_ops": [
-    "agent.init"
+    "agent.init",
+    "context.resolve"
   ]
 }

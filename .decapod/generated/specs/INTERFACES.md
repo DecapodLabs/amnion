@@ -31,14 +31,14 @@ Generated interface specs should include:
 - API / RPC entrypoints:
 - CLI surfaces:
 - Event/webhook consumers:
-- Repository-detected surfaces: not detected yet
+- Repository-detected surfaces: cargo, rust
 
 ## Data Ownership
 - Source-of-truth tables/collections:
 - Cross-boundary read models:
 - Consistency expectations:
 
-## Error Taxonomy Example (not classified yet)
+## Error Taxonomy Example (cli)
 ```rust
 #[derive(Debug, thiserror::Error)]
 pub enum ApiError {

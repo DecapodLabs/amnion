@@ -4,7 +4,7 @@
 cli
 
 ## What This Project Is
-amnion is a to be confirmed project built using Rust.
+amnion is a cli project built using Rust.
 cli
 
 Architectural principles:
@@ -14,8 +14,8 @@ Architectural principles:
 
 ## Current Facts
 - Runtime/languages: Rust
-- Detected surfaces/framework hints: to be confirmed
-- Product type: to be confirmed
+- Detected surfaces/framework hints: cargo, rust
+- Product type: cli
 
 ## Architecture Map
 This project's architecture consists of the following key layers/directories:
@@ -33,11 +33,11 @@ This project's architecture consists of the following key layers/directories:
 ## Topology
 ```mermaid
 flowchart LR
-  C[Client] --> G[API Gateway]
-  G --> S[Service Core]
-  S --> W[Workers]
-  S --> DB[(Primary Datastore)]
-  W --> Q[(Queue)]
+  U[User] --> C[CLI Entrypoint]
+  C --> R[Command Router]
+  R --> E[Core Engine]
+  E --> S[(Local Store)]
+  E --> X[External APIs / Filesystem]
 ```
 
 ## Store Boundaries
@@ -51,16 +51,16 @@ flowchart LR
 ## Happy Path Sequence
 ```mermaid
 sequenceDiagram
-  participant C as Client
-  participant G as API
-  participant D as Domain
-  participant DB as Datastore
-  C->>G: Request
-  G->>D: Validate + execute
-  D->>DB: Commit transaction
-  DB-->>D: Commit ok
-  D-->>G: Domain result
-  G-->>C: Response + trace_id
+  participant U as User
+  participant C as CLI
+  participant E as Core Engine
+  participant S as Store
+  U->>C: Run command
+  C->>E: Parse + validate
+  E->>S: Persist mutation
+  S-->>E: Ack
+  E-->>C: Result
+  C-->>U: Structured output
 ```
 
 ## Error Path
