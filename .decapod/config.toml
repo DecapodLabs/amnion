@@ -15,20 +15,15 @@ entrypoints = [
 product_name = "amnion"
 product_summary = "UI/UX layer. The soft place where intent becomes visible. The terminal cockpit, workspace, conversation surface, intent browser, status view, and human interaction layer."
 architecture_direction = "cli"
-product_type = "service_or_library"
+product_type = "cli"
 done_criteria = "Done means Amnion provides a soft, terminal-native Rust TUI where a human can move between governed intents, see each intent’s calm custody state at a glance, and drill into details only when needed: active agent/session, claimed todos, current worktree, touched files, Decapod validation state, approvals, blockers, proof artifacts, handoff summary, and recent meaningful activity. Amnion must not run the agent loop itself; it renders and controls Pincher-managed execution while treating Decapod as the source of governance truth. The default experience should be quiet and confidence-oriented, with minimal log noise, explicit human-attention states, and adjustable verbosity for deeper event streams, raw logs, validation failures, and proof inspection."
 base_branch = "main"
 primary_languages = ["Rust"]
 detected_surfaces = [
     "cargo",
-    "cli",
     "rust",
 ]
 external_tracker = false
 container_workspaces = true
 mode = "local"
-declared_capabilities = [
-    "event-driven",
-    "persistent-state",
-    "public-api",
-]
+declared_capabilities = ["event-driven"]

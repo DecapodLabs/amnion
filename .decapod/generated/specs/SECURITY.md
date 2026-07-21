@@ -1,78 +1,89 @@
 # Security
 
-<!-- decapod:capability-overlay:public-api:start -->
-
-## Public API Security Overlay
-
-### Authentication Requirements
-- All public endpoints MUST validate authentication tokens
-- Token validation MUST include expiry, revocation, and scope checks
-- Anonymous access MUST be explicitly documented and justified
-
-### Input Validation
-- All request bodies MUST be validated against schemas
-- Reject requests with unknown fields (strict schema validation)
-- Size limits MUST be enforced on all request bodies
-
-### Rate Limiting
-- Limits and enforcement boundaries MUST be selected for this deployment
-- Clustered enforcement behavior MUST be documented when applicable
-- Client-visible throttling behavior MUST be part of the contract when applicable
-<!-- decapod:capability-overlay:public-api:end -->
-
 ## Threat Model
-
 ```mermaid
 flowchart LR
-  HUMAN[Human] --> UI[Amnion projection]
-  UI --> PINCHER[Pincher integration]
-  PINCHER --> DECAPOD[Decapod authority]
-  PINCHER --> REPO[Allowed workspace]
-  DECAPOD --> AUDIT[Custody, approval, proof]
+   U[User/Client] --> A[Application Boundary]
+   A --> D[(Data Stores)]
+   A --> X[External Dependencies]
+   I[Identity Provider] --> A
+   A --> L[Audit Logs]
 ```
 
-Amnion is a presentation client, not a trust root. It must treat Pincher
-events and provider output as untrusted input for rendering, preserve
-Decapod's approval/validation results, and avoid creating authority from
-optimistic UI state.
+## STRIDE Table
+| Threat | Surface | Mitigation | Verification |
+|---|---|---|---|
+| Spoofing | Auth boundary | strong auth + token validation | auth tests |
+| Tampering | State mutation APIs | integrity checks + RBAC | integration tests |
+| Repudiation | Critical actions | immutable audit logs | log review |
+| Information disclosure | Data at rest/in transit | encryption + classification | security scans |
+| Denial of service | Hot paths | rate limit + backpressure | load tests |
+| Elevation of privilege | Admin interfaces | least privilege + policy checks | authz tests |
+
+## Authentication
+- Identity source:
+- Token/session lifetime:
+- Rotation and revocation:
 
 ## Authorization
-
-Amnion never grants approval, proof, or promotion. Human actions are routed to
-Pincher/Decapod and only authoritative results change the projection.
+- Role model:
+- Resource-level policy:
+- Privilege escalation controls:
 
 ## Data Classification
+| Data Class | Examples | Storage Rules | Access Rules |
+|---|---|---|---|
+| Public | docs, non-sensitive metadata | standard | unrestricted |
+| Internal | operational telemetry | controlled | team access |
+| Sensitive | tokens, PII, secrets | encrypted | least privilege |
 
-| Class | Examples | Handling |
-| --- | --- | --- |
-| Public | status summaries and non-sensitive event metadata | renderable |
-| Internal | custody refs, validation detail, source errors | scoped detail |
-| Sensitive | credentials, tokens, raw secret-bearing content | never store/render |
+## Sensitive Data Handling
+- Encryption at rest:
+- Encryption in transit:
+- Redaction in logs:
+- Retention + deletion policy:
 
-## Controls
+## Supply Chain Security
+- Recommended scanners: `cargo audit`, `cargo deny`, `cargo vet`
+- Dependency update cadence:
+- Signed artifact/provenance strategy:
 
-- Do not store session passwords, API keys, or raw secret-bearing prompts in
-  view state or logs.
-- Render only the scope and custody references returned by Pincher/Decapod.
-- Require explicit confirmation for actions with human or repository impact;
-  route the action through the governed owner.
-- Keep claimed identity/provenance separate from verified identity. A local
-  session is custody/correlation, not provider authentication.
-- Preserve source errors and unknown events instead of hiding them.
+## Secrets Management
+| Secret | Source | Rotation | Consumer |
+|---|---|---|---|
+| External service auth material | managed runtime configuration | periodic | runtime services |
+| Artifact signing material | managed signing service/local secure store | periodic | release pipeline |
 
-## Threats and proof
+## Security Testing
+| Test Type | Cadence | Tooling |
+|---|---|---|
+| SAST | each PR | language linters/scanners |
+| Dependency scan | each PR + weekly | supply-chain tools |
+| DAST/pentest | scheduled | external/internal |
 
-| Threat | Mitigation | Proof |
-| --- | --- | --- |
-| UI spoofing of approval | show authoritative Decapod result/reference | projection tests |
-| Scope confusion | render task/work-unit/workspace ids | integration fixture |
-| Secret leakage | redaction and bounded detail views | security review |
-| Malicious provider content | treat content as data, not UI instructions | rendering tests |
+## Compliance and Audit
+- Regulatory scope:
+- Audit evidence location:
+- Exception process:
+
+## Pre-Promotion Security Checklist
+- [ ] Threat model updated for changed surfaces.
+- [ ] Auth/authz tests pass.
+- [ ] Dependency vulnerability scan reviewed.
+- [ ] No unresolved critical/high security findings.
+
+## Strongest Security Primitives
+Describe the security primitives and security controls implemented in this repository.
+
+## Security Practices
+- **Least Privilege**: Ensure minimal access permissions for all subsystems and roles.
+- **Input Validation**: Strictly validate all inputs at trust boundaries.
+- **Secure Storage**: Encrypt sensitive data at rest and in transit.
 
 <!-- decapod:codebase-attestation:start -->
 ## Codebase Attestation
 
-- Repository signal fingerprint: `cbb46fea4ed69a2e244419b99c731f321e0d22223264c74afc034828705c58f2`
-- Significant implementation surfaces: `.github/` (1 files), `README.md/` (1 files)
+- Repository signal fingerprint: `e14883da1b4f85ca5e1f0840e457997727677b8135fe87c8d51b9ea1f0dd0d92`
+- Significant implementation surfaces: `.github/` (1 files), `Cargo.lock/` (1 files), `Cargo.toml/` (1 files), `README.md/` (1 files), `src/` (8 files)
 - Refreshed from the current codebase by `decapod specs.refresh`
 <!-- decapod:codebase-attestation:end -->

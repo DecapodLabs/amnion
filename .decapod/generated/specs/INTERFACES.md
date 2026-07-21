@@ -1,85 +1,79 @@
 # Interfaces
 
-<!-- decapod:capability-overlay:public-api:start -->
+## Contract Principles
+- Prefer explicit schemas over implicit behavior.
+- Every mutating interface defines idempotency semantics.
+- Every failure path maps to a typed, documented error code.
 
-## Public API Capability Overlay
+## Generated Contract Depth
+Generated interface specs should include:
+- API/CLI contracts with request/response schemas.
+- Read/write ownership for each storage path.
+- Idempotency and retry behavior for mutations.
+- Typed failure classes and recovery instructions.
 
-### API Contract Requirements
-- All public endpoints MUST define explicit request/response schemas
-- Versioning strategy MUST be documented (URL path or header-based)
-- All public endpoints MUST implement idempotency for mutating operations
-- Rate limiting and pagination MUST be implemented for list endpoints
+## API / RPC Contracts
+| Interface | Method | Request Schema | Response Schema | Errors | Idempotency |
+|---|---|---|---|---|---|
+| `TODO` | `TODO` | `TODO` | `TODO` | `TODO` | `TODO` |
 
-### Compatibility Guarantees
-- Backward-compatible changes ONLY within a version
-- Breaking changes require new version (v1, v2, etc.)
-- Deprecation and removal policy MUST be selected for this project and proven against its consumers
-
-### Security Requirements
-- All public endpoints MUST implement authentication
-- Abuse-control enforcement point MUST be a documented project decision
-- Input validation MUST reject malformed requests with typed errors
-<!-- decapod:capability-overlay:public-api:end -->
-
-## Inbound Contracts
-
-Pincher provides typed runtime state/events and custody identifiers. Decapod
-provides authoritative approval, validation, and proof results.
+## Event Consumers
+| Consumer | Event | Ordering Requirement | Retry Policy | DLQ Policy |
+|---|---|---|---|---|
+| `TODO` | `TODO` | `TODO` | `TODO` | `TODO` |
 
 ## Outbound Dependencies
+| Dependency | Purpose | SLA | Timeout | Circuit-Breaker |
+|---|---|---|---|---|
+| `TODO` | `TODO` | `TODO` | `TODO` | `TODO` |
 
-Human controls route to Pincher/Decapod through the governed integration; no
-parallel store or provider adapter is owned by Amnion.
-
-## Pincher Host Contract
-
-Pincher produces typed runtime state and events. Amnion consumes them as a
-projection and preserves the identifiers needed to query authoritative
-Decapod state.
-
-| Contract | Producer | Consumer | Authority |
-| --- | --- | --- | --- |
-| Agent/run state | Pincher | Amnion view model | Pincher for runtime |
-| `Event` stream | Pincher | Amnion activity/detail views | Pincher event identity |
-| Session/task/workspace/work-unit refs | Pincher | Amnion | Decapod records |
-| Approval/validation/proof result | Decapod via Pincher | Amnion | Decapod |
-
-Every event projection retains event id, timestamp, event type, source, and
-optional session/task/work-unit ids. Unknown event types remain visible as
-safe generic activity rather than being discarded or reinterpreted.
+## Inbound Contracts
+- API / RPC entrypoints:
+- CLI surfaces:
+- Event/webhook consumers:
+- Repository-detected surfaces: cargo, rust
 
 ## Data Ownership
+- Source-of-truth tables/collections:
+- Cross-boundary read models:
+- Consistency expectations:
 
-Amnion owns projections and local view state. Pincher owns runtime state/events;
-Decapod owns durable custody and proof.
-
-## Human actions
-
-Human actions are commands to inspect, start/stop, request attention, or route
-an approval decision through the governed integration. Amnion displays a
-pending state until Pincher/Decapod returns a typed result. UI state alone can
-never grant approval, mark proof complete, or promote a run.
+## Error Taxonomy Example (cli)
+```rust
+#[derive(Debug, thiserror::Error)]
+pub enum ApiError {
+    #[error("validation failed: {0}")]
+    Validation(String),
+    #[error("upstream timeout")]
+    UpstreamTimeout,
+    #[error("conflict: {0}")]
+    Conflict(String),
+}
+```
 
 ## Failure Semantics
+| Failure Class | Retry/Backoff | Client Contract | Observability |
+|---|---|---|---|
+| Validation | No retry | 4xx typed error | warn log + metric |
+| Dependency timeout | Exponential backoff | 503 with retryable code | error log + alert |
+| Conflict | Conditional retry | 409 with conflict detail | info log + metric |
 
-| Failure | Projection | Action |
-| --- | --- | --- |
-| Event/provider delay | stale/pending indicator with last update | wait or inspect |
-| Decapod interlock | blocked + required approval reference | route human attention |
-| Validation/proof failure | failed-with-cause + evidence link | inspect/handoff |
-| Lost/invalid custody reference | unavailable + explicit source error | do not infer state |
+## Timeout Budget
+| Hop | Budget (ms) | Notes |
+|---|---|---|
+| Client -> Edge/API | 500 | Includes auth + routing |
+| API -> Domain | 300 | Includes validation |
+| Domain -> Store/Dependency | 200 | Includes retry overhead |
 
-## Compatibility
-
-The initial consumer can use local typed Rust values or serialized events. A
-transport contract is deferred; when introduced it must be versioned and name
-producer, consumer, lifecycle, correlation/idempotency fields, error mapping,
-and migration evidence.
+## Interface Versioning
+- Version strategy (`v1`, date-based, semver):
+- Backward-compatibility guarantees:
+- Deprecation window and removal policy:
 
 <!-- decapod:codebase-attestation:start -->
 ## Codebase Attestation
 
-- Repository signal fingerprint: `cbb46fea4ed69a2e244419b99c731f321e0d22223264c74afc034828705c58f2`
-- Significant implementation surfaces: `.github/` (1 files), `README.md/` (1 files)
+- Repository signal fingerprint: `e14883da1b4f85ca5e1f0840e457997727677b8135fe87c8d51b9ea1f0dd0d92`
+- Significant implementation surfaces: `.github/` (1 files), `Cargo.lock/` (1 files), `Cargo.toml/` (1 files), `README.md/` (1 files), `src/` (8 files)
 - Refreshed from the current codebase by `decapod specs.refresh`
 <!-- decapod:codebase-attestation:end -->

@@ -2,6 +2,7 @@
 .decapod/data/*
 .decapod/.stfolder
 .decapod/workspaces
+target/
 .decapod/generated/*
 !.decapod/data/
 !.decapod/data/knowledge.promotions.jsonl
