@@ -25,6 +25,10 @@ The current source is a deterministic fixture/replay adapter. It is a deliberate
 stand-in while Pincher’s host-facing event contract is still provisional; it is
 not a claim that Amnion has production Pincher transport integration.
 
+This first slice is intentionally a foreground demonstration of the projection
+boundary: the fixture source can be replaced by a live adapter without changing
+the reducer or terminal presentation.
+
 ```bash
 cargo run
 ```
