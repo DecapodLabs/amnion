@@ -1,42 +1,22 @@
-# Project Specs
+# Amnion project specs
 
-Canonical path: `.decapod/generated/specs/`.
-These files are the project-local contract for humans and agents.
+These living specs define Amnion as the human-facing terminal host for the
+Pincher loop engine and Decapod governance plane.
 
-## Snapshot
-- Project: this repository
-- Outcome: Define the intended user-visible outcome.
-- Detected languages: not detected yet
-- Detected surfaces: not detected yet
+- `INTENT.md` defines the quiet, confidence-oriented TUI outcome.
+- `ARCHITECTURE.md` defines projection, control, and state ownership.
+- `INTERFACES.md` defines the Pincher event/state consumer boundary.
+- `SEMANTICS.md` defines display and human-action semantics.
+- `OPERATIONS.md` defines host startup, refresh, and failure handling.
+- `SECURITY.md` defines the projection trust boundary.
+- `VALIDATION.md` defines host and contract proof surfaces.
 
-## How to use this folder
-- [INTENT.md](./INTENT.md): what success means and what is explicitly out of scope.
-- [ARCHITECTURE.md](./ARCHITECTURE.md): topology, runtime model, data boundaries, and ADR trail.
-- [INTERFACES.md](./INTERFACES.md): API/CLI/events/storage contracts and failure behavior.
-- [VALIDATION.md](./VALIDATION.md): proof commands, quality gates, and evidence artifacts.
-- [SEMANTICS.md](./SEMANTICS.md): state machines, invariants, replay rules, and idempotency.
-- [OPERATIONS.md](./OPERATIONS.md): SLOs, monitoring, incident response, and rollout strategy.
-- [SECURITY.md](./SECURITY.md): threat model, trust boundaries, auth/authz, and supply-chain posture.
+Amnion must not run Pincher's loop or duplicate Decapod's authoritative state.
 
-## Canonical `.decapod/` Layout
-- `.decapod/data/`: canonical control-plane state (SQLite + ledgers).
-- `.decapod/generated/specs/`: **Living project specs** for humans and agents.
-- `.decapod/generated/context/`: deterministic context capsules.
-- `.decapod/generated/policy/context_capsule_policy.json`: repo-native JIT context policy contract.
-- `.decapod/generated/artifacts/provenance/`: promotion manifests and convergence checklist.
-- `.decapod/generated/artifacts/custody/`: epistemic custody artifacts (assumptions, contradictions, deferred questions).
-- `.decapod/generated/artifacts/inventory/`: deterministic release inventory.
-- `.decapod/generated/artifacts/diagnostics/`: opt-in diagnostics artifacts.
-- `.decapod/workspaces/`: isolated todo-scoped git worktrees.
+<!-- decapod:codebase-attestation:start -->
+## Codebase Attestation
 
-## Day-0 Onboarding Checklist
-- [ ] Replace all placeholders in all 8 spec files.
-- [ ] Confirm primary user outcome and acceptance criteria in [INTENT.md](./INTENT.md).
-- [ ] Confirm topology and runtime model in [ARCHITECTURE.md](./ARCHITECTURE.md).
-- [ ] Document all inbound/outbound contracts in [INTERFACES.md](./INTERFACES.md).
-- [ ] Define validation gates and CI proof surfaces in [VALIDATION.md](./VALIDATION.md).
-- [ ] Define state machines and invariants in [SEMANTICS.md](./SEMANTICS.md).
-- [ ] Define SLOs, alerting, and incident process in [OPERATIONS.md](./OPERATIONS.md).
-- [ ] Define threat model and auth/authz decisions in [SECURITY.md](./SECURITY.md).
-- [ ] Ensure architecture diagram, docs, changelog, and tests are mapped to promotion gates.
-- [ ] Run all validation/test commands and attach evidence artifacts.
+- Repository signal fingerprint: `cbb46fea4ed69a2e244419b99c731f321e0d22223264c74afc034828705c58f2`
+- Significant implementation surfaces: `.github/` (1 files), `README.md/` (1 files)
+- Refreshed from the current codebase by `decapod specs.refresh`
+<!-- decapod:codebase-attestation:end -->

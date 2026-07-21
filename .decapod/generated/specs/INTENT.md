@@ -1,98 +1,69 @@
 # Intent
 
+<!-- decapod:declared-capabilities:start -->
+
+## Declared Capability Surfaces
+
+- `event-driven`
+- `persistent-state`
+- `public-api`
+
+<!-- decapod:declared-capabilities:end -->
 ## Product Outcome
-- UI/UX layer. The soft place where intent becomes visible. The terminal cockpit, workspace, conversation surface, intent browser, status view, and human interaction layer.
 
-## What This Project Is
-amnion is a not classified yet project built using Rust.
-UI/UX layer. The soft place where intent becomes visible. The terminal cockpit, workspace, conversation surface, intent browser, status view, and human interaction layer.
-
-Key operating facts:
-- **Primary languages**: Rust
-- **Detected surfaces**: not detected yet
-
-## Product View
-```mermaid
-flowchart LR
-  U[Primary User] --> P[amnion]
-  P --> O[User-visible Outcome]
-  P --> G[Proof Gates]
-  G --> E[Evidence Artifacts]
-```
-
-## Inferred Baseline
-- Repository: amnion
-- Product type: not classified yet
-- Primary languages: Rust
-- Detected surfaces: not detected yet
+Amnion is the human-facing Rust terminal UI/UX for Pincher-managed governed
+execution. It turns typed runtime state and events into a calm cockpit where a
+human can understand custody, attention, progress, blockers, approvals, proof,
+and handoff without reading a noisy raw log stream.
 
 ## Scope
-| Area | In Scope | Proof Surface |
-|---|---|---|
-| Core workflow | Define a concrete user-visible workflow | Acceptance criteria + tests |
-| Data contracts | Document canonical inputs/outputs | [INTERFACES.md](./INTERFACES.md) and schema checks |
-| Delivery quality | Block promotion on broken proof surfaces | [VALIDATION.md](./VALIDATION.md) blocking gates |
 
-## Non-Goals (Falsifiable)
-| Non-goal | How to falsify |
-|---|---|
-| Feature creep beyond the primary outcome | Any PR adds capability not tied to outcome criteria |
-| Shipping without evidence | Missing validation artifacts for promoted changes |
-| Ambiguous ownership boundaries | Missing owner/system-of-record in interfaces |
+| Area | Amnion owns | Authority |
+| --- | --- | --- |
+| Presentation | Intent browser, workspace/conversation views, status projection, and adjustable detail | Amnion |
+| Human control | Explicit actions that request or acknowledge a governed transition | Decapod records result |
+| Execution | Start/stop/view controls delegated to Pincher | Pincher |
+| Governance | Session, task, workspace, approval, validation, proof, and promotion truth | Decapod |
+
+## Non-goals
+
+- Do not implement the agent loop or provider/tool orchestration.
+- Do not write a parallel approval, todo, worktree, or proof database.
+- Do not present a local optimistic action as an approved or promoted result.
+- Do not require a specific backend transport until the Pincher host contract is
+  versioned.
 
 ## Constraints
-- Technical: runtime, dependency, and topology boundaries are explicit.
-- Operational: deployment, rollback, and incident ownership are defined.
-- Security/compliance: sensitive data handling and authz are mandatory.
 
-## Acceptance Criteria (must be objectively testable)
-- [ ] Done means Amnion provides a soft, terminal-native Rust TUI where a human can move between governed intents, see each intent’s calm custody state at a glance, and drill into details only when needed: active agent/session, claimed todos, current worktree, touched files, Decapod validation state, approvals, blockers, proof artifacts, handoff summary, and recent meaningful activity. Amnion must not run the agent loop itself; it renders and controls Pincher-managed execution while treating Decapod as the source of governance truth. The default experience should be quiet and confidence-oriented, with minimal log noise, explicit human-attention states, and adjustable verbosity for deeper event streams, raw logs, validation failures, and proof inspection.
-- [ ] Non-functional targets are met (latency, reliability, cost, etc.).
-- [ ] Validation gates pass and artifacts are attached.
-- [ ] `cargo test` passes for unit/integration coverage
-- [ ] `cargo clippy -- -D warnings` passes with no denied lints
-- [ ] `cargo fmt --check` passes on the repo
+- Rust-first, terminal-native local host.
+- Pincher owns execution; Decapod owns governance truth.
+- Amnion's view state is a projection and cannot grant approval or promotion.
 
-## Epistemic Custody Fields
+## Acceptance Criteria
 
-### Active Assumptions
-- [ ] List any assumptions made to proceed.
-- [ ] Flag assumptions that require future verification.
+- [ ] A human can move between governed intents and identify active custody at
+      a glance.
+- [ ] A detail view exposes agent/session, todo, worktree, touched files,
+      validation, approvals, blockers, proofs, and handoff summary.
+- [ ] Quiet mode shows meaningful activity; adjustable verbosity exposes event
+      detail, raw logs, validation failures, and proof inspection.
+- [ ] Every rendered status retains Pincher/Decapod identifiers and source
+      timestamps needed to trace it to authority.
+- [ ] Human actions are explicit, reversible where possible, and followed by a
+      Decapod result before the projection changes to an authoritative state.
+- [ ] The host builds/tests cleanly and `decapod validate` passes.
 
-### Confidence & Risk Level
-- **Confidence**: Low/Medium/High (Rationale: )
-- **Risk**: Low/Medium/High (Impact of wrong assumptions: )
+## Assumptions
 
-### Measured vs Inferred Facts
-| Fact | Source (Provenance) | Type (Measured/Inferred) |
-|---|---|---|
-| | | |
+- Pincher is the first execution producer and Amnion is its first host.
+- The initial implementation can consume serialized Rust/event values locally;
+  a long-lived transport is deferred until a concrete need is proven.
+- Amnion is intentionally local-first and terminal-native.
 
-### Unresolved Contradictions
-- [ ] List any evidence that conflicts with current assumptions or intent.
+<!-- decapod:codebase-attestation:start -->
+## Codebase Attestation
 
-### Deferred Questions
-- [ ] Questions to be answered later.
-
-### Stop Conditions
-- [ ] Explicit conditions under which the agent should stop and ask for help.
-
-### Proof Required Before Completion
-- [ ] Specific evidence needed to prove the outcome is met.
-
-## Tradeoffs Register
-| Decision | Benefit | Cost | Review Trigger |
-|---|---|---|---|
-| Simplicity vs extensibility | Faster iteration | Potential rework | Feature set expands |
-| Strict gates vs dev speed | Higher confidence | More upfront discipline | Lead time regressions |
-
-## First Implementation Slice
-- [ ] Define the smallest user-visible workflow to ship first.
-- [ ] Define required data/contracts for that workflow.
-- [ ] Define what is intentionally postponed until v2.
-
-## Open Questions (with decision deadlines)
-| Question | Owner | Deadline | Decision |
-|---|---|---|---|
-| Which interfaces are versioned at launch? | TBD | YYYY-MM-DD | |
-| Which non-functional target is hardest to hit? | TBD | YYYY-MM-DD | |
+- Repository signal fingerprint: `cbb46fea4ed69a2e244419b99c731f321e0d22223264c74afc034828705c58f2`
+- Significant implementation surfaces: `.github/` (1 files), `README.md/` (1 files)
+- Refreshed from the current codebase by `decapod specs.refresh`
+<!-- decapod:codebase-attestation:end -->
